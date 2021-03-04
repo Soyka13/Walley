@@ -17,6 +17,7 @@ class ViewController: UIViewController {
     var previousLoc = CGPoint.init(x: 0, y: 0)
     var isRotating = false
     
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -36,24 +37,48 @@ class ViewController: UIViewController {
         self.sceneView.addGestureRecognizer(gestureRecognizer)
     }
     
-    
-    @objc func handlePan(_ gesture: UIPanGestureRecognizer) {
+    @IBAction func upTapped(_ sender: Any) {
         guard let nodeToMove = sceneView.scene.rootNode.childNode(withName: "painting1", recursively: false) else { return }
-        
-        if !isRotating{
-            
-            let currentTouchPoint = gesture.location(in: self.sceneView)
-            
-            guard let hitTest = self.sceneView.hitTest(currentTouchPoint, types: .existingPlane).first else { return }
-            
-            let worldTransform = hitTest.worldTransform
-            
-            let newPosition = SCNVector3(worldTransform.columns.3.x, worldTransform.columns.3.y, worldTransform.columns.3.z)
-            
-            nodeToMove.simdPosition = float3(newPosition.x, newPosition.y, newPosition.z)
-            
-        }
+        let moveUp = SCNAction.repeat(SCNAction.moveBy(x: 0, y: 0.05, z: 0, duration: 0.1), count: 1)
+        nodeToMove.runAction(moveUp)
     }
+    
+    @IBAction func downTapped(_ sender: Any) {
+        guard let nodeToMove = sceneView.scene.rootNode.childNode(withName: "painting1", recursively: false) else { return }
+        let moveDown = SCNAction.repeat(SCNAction.moveBy(x: 0, y: -0.05, z: 0, duration: 0.1), count: 1)
+        nodeToMove.runAction(moveDown)
+    }
+    
+    @IBAction func leftTapped(_ sender: Any) {
+        guard let nodeToMove = sceneView.scene.rootNode.childNode(withName: "painting1", recursively: false) else { return }
+        let moveLeft = SCNAction.repeat(SCNAction.moveBy(x: -0.05, y: 0, z: 0, duration: 0.1), count: 1)
+        nodeToMove.runAction(moveLeft)
+    }
+    
+    @IBAction func rightTapped(_ sender: Any) {
+        guard let nodeToMove = sceneView.scene.rootNode.childNode(withName: "painting1", recursively: false) else { return }
+        let moveRight = SCNAction.repeat(SCNAction.moveBy(x: 0.05, y: 0, z: 0, duration: 0.1), count: 1)
+        nodeToMove.runAction(moveRight)
+    }
+    
+    @IBAction func forwardTapped(_ sender: Any) {
+        guard let nodeToMove = sceneView.scene.rootNode.childNode(withName: "painting1", recursively: false) else { return }
+        let moveForward = SCNAction.repeat(SCNAction.moveBy(x: 0, y: 0, z: 0.05, duration: 0.1), count: 1)
+        nodeToMove.runAction(moveForward)
+    }
+    
+    @IBAction func backwardTapped(_ sender: Any) {
+        guard let nodeToMove = sceneView.scene.rootNode.childNode(withName: "painting1", recursively: false) else { return }
+        let moveBackward = SCNAction.repeat(SCNAction.moveBy(x: 0, y: 0, z: -0.05, duration: 0.1), count: 1)
+        nodeToMove.runAction(moveBackward)
+    }
+    
+    @IBAction func rotateTapped(_ sender: Any) {
+        guard let nodeToMove = sceneView.scene.rootNode.childNode(withName: "painting1", recursively: false) else { return }
+        let moveBackward = SCNAction.repeat(SCNAction.rotateBy(x: 0, y: CGFloat(0.1 * Double.pi), z: 0, duration: 0.1), count: 1)
+        nodeToMove.runAction(moveBackward)
+    }
+  
     
     // MARK: - Initialization
     
@@ -121,6 +146,24 @@ class ViewController: UIViewController {
         if(gesture.state == .ended) {
             currentAngleY = nodeToRotate.eulerAngles.y
             isRotating = false
+        }
+    }
+    
+    @objc func handlePan(_ gesture: UIPanGestureRecognizer) {
+        guard let nodeToMove = sceneView.scene.rootNode.childNode(withName: "painting1", recursively: false) else { return }
+        
+        if !isRotating{
+            
+            let currentTouchPoint = gesture.location(in: self.sceneView)
+            
+            guard let hitTest = self.sceneView.hitTest(currentTouchPoint, types: .existingPlane).first else { return }
+            
+            let worldTransform = hitTest.worldTransform
+            
+            let newPosition = SCNVector3(worldTransform.columns.3.x, worldTransform.columns.3.y, worldTransform.columns.3.z)
+            
+            nodeToMove.simdPosition = float3(newPosition.x, newPosition.y, newPosition.z)
+            
         }
     }
     
